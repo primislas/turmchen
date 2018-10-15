@@ -1,0 +1,124 @@
+<div class="col-lg-12 mt-3">
+  <div class="card">
+
+    <h5 class="card-header">Меню</h5>
+
+    <div class="card-body">
+      <table class="table table-sm table-striped table-hover" [mfData]="filteredDishes" #mf="mfDataTable"
+             [mfRowsOnPage]="10">
+        <thead class="thead-dark">
+          <tr>
+            <!--<th><mfDefaultSorter>Id</mfDefaultSorter></th>-->
+            <th></th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Цена</th>
+            <th>Вес</th>
+            <th>Категории</th>
+            <th>Дни</th>
+          </tr>
+          <tr>
+            <!--<th></th>-->
+            <th></th>
+            <th *ngFor="let filter of filters">
+              <input *ngIf="filter.filter !== undefined && !(filter.select.length > 0)" class="form-control-sm" type="text"
+                     [(ngModel)]="filter.value" (keyup)="search(filter)">
+              <select *ngIf="filter.select.length > 0" class="form-control-sm" type="select" [(ngModel)]="filter.value"
+                      (change)="search(filter)">
+                <option *ngFor="let v of filter.select">{{v}}</option>
+              </select>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let dish of mf.data">
+            <!--<td>{{dish.id}}</td>-->
+            <button class="btn btn-outline-dark" (click)="orderDish(dish)">
+              <i class="fa fa-shopping-cart"></i>
+            </button>
+            <td>{{dish.name}}</td>
+            <td>{{dish.description}}</td>
+            <td>{{dish.price}}₴</td>
+            <td>{{dish.weight}}</td>
+            <td>{{dish.categories}}</td>
+            <td>{{dish.displaySchedule}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="6">
+              <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,100,500]"></mfBootstrapPaginator>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="order.items.length > 0" class="col-lg-12 mt-3">
+  <div class="card">
+
+    <div class="card-header">
+      <div class="row">
+        <div class="col-1"></div>
+        <div class="col-9"><h5>Заказ<span class="pull-right"><label>{{order.price}}₴</label></span></h5></div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <table class="table table-sm table-striped table-hover mt-3">
+        <thead class="thead-light">
+          <th>Блюдо</th>
+          <th>Кол-во</th>
+          <th>Цена</th>
+          <th></th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of order.items; let i = index">
+            <td>{{item?.dish?.name}}</td>
+            <td>
+              <input class="form-control-sm" type="number" min="1" [(ngModel)]="item.quantity" (ngModelChange)="order.recalcPrice(item);">
+            </td>
+            <td>{{item.price}}₴</td>
+            <td>
+              <button class="btn btn-sm btn-danger" (click)="order.removeDish(i)">
+                <i class="fa fa-remove"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-footer">
+      <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+          <button class="btn btn-info pull-right" (click)="confirmOrder(selectCustomer)"><i class="fa fa-cart"></i>Заказать</button>
+        </div>
+      </div>
+      </div>
+  </div>
+</div>
+
+<ng-template #selectCustomer let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Подтверждение заказа</h4>
+  </div>
+  <div class="modal-body">
+    <div class="col-sm-4">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="customerLabel">Заказчик</span>
+        </div>
+        <input type="text" class="form-control" id="customer" aria-describedby="customerLabel" [(ngModel)]="order.customerAlias">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-info pull-right" (click)="modal.close(order.customerAlias)"><i class="fa fa-cart"></i>Подтвердить</button>
+    <button class="btn pull-right" (click)="modal.dismiss()">Отмена</button>
+  </div>
+</ng-template>
