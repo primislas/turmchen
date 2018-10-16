@@ -1,138 +1,138 @@
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#nav-orders" role="tab" aria-controls="nav-orders" aria-selected="true">Заказы</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">По заказчику</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">По блюду</a>
-  </li>
-</ul>
+<!--<ul class="nav nav-tabs" id="myTab" role="tablist">-->
+  <!--<li class="nav-item">-->
+    <!--<a class="nav-link active" id="home-tab" data-toggle="tab" href="#nav-orders" role="tab" aria-controls="nav-orders" aria-selected="true">Заказы</a>-->
+  <!--</li>-->
+  <!--<li class="nav-item">-->
+    <!--<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">По заказчику</a>-->
+  <!--</li>-->
+  <!--<li class="nav-item">-->
+    <!--<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">По блюду</a>-->
+  <!--</li>-->
+<!--</ul>-->
 
-<div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="nav-orders" role="tabpanel" aria-labelledby="nav-orders-tab">
+<!--<div class="tab-content" id="myTabContent">-->
+  <!--<div class="tab-pane fade show active" id="nav-orders" role="tabpanel" aria-labelledby="nav-orders-tab">-->
 
-    <div class="col-lg-12">
-      <div class="card">
+
+  <!--</div>-->
+
+
+  <!--&lt;!&ndash;<table class="table table-sm table-striped table-hover mt-3">&ndash;&gt;-->
+    <!--&lt;!&ndash;<thead class="thead-light">&ndash;&gt;-->
+      <!--&lt;!&ndash;<th>Заказчик</th>&ndash;&gt;-->
+      <!--&lt;!&ndash;<th>Блюда</th>&ndash;&gt;-->
+    <!--&lt;!&ndash;</thead>&ndash;&gt;-->
+    <!--&lt;!&ndash;<tbody>&ndash;&gt;-->
+    <!--&lt;!&ndash;<tr *ngFor="let e of dishesByCustomer.entries(); let i = index">&ndash;&gt;-->
+      <!--&lt;!&ndash;<td>{{e[0]}}</td>&ndash;&gt;-->
+      <!--&lt;!&ndash;<td>{{e[1].map(o => `${d.name} (${d.quantity`)}}₴</td>&ndash;&gt;-->
+    <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+    <!--&lt;!&ndash;</tbody>&ndash;&gt;-->
+  <!--&lt;!&ndash;</table>&ndash;&gt;-->
+
+  <!--<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">-->
+
+    <!--&lt;!&ndash;<table class="table table-sm table-striped table-hover mt-3">&ndash;&gt;-->
+      <!--&lt;!&ndash;<thead class="thead-light">&ndash;&gt;-->
+      <!--&lt;!&ndash;<th>Блюдо</th>&ndash;&gt;-->
+      <!--&lt;!&ndash;<th>Кол-во</th>&ndash;&gt;-->
+      <!--&lt;!&ndash;<th>Цена</th>&ndash;&gt;-->
+      <!--&lt;!&ndash;<th></th>&ndash;&gt;-->
+      <!--&lt;!&ndash;</thead>&ndash;&gt;-->
+      <!--&lt;!&ndash;<tbody>&ndash;&gt;-->
+      <!--&lt;!&ndash;<tr *ngFor="let item of order.items; let i = index">&ndash;&gt;-->
+        <!--&lt;!&ndash;<td>{{item?.dish?.name}}</td>&ndash;&gt;-->
+        <!--&lt;!&ndash;<td>&ndash;&gt;-->
+          <!--&lt;!&ndash;<input class="form-control-sm" type="number" min="1" [(ngModel)]="item.quantity" (ngModelChange)="order.recalcPrice(item)">&ndash;&gt;-->
+        <!--&lt;!&ndash;</td>&ndash;&gt;-->
+        <!--&lt;!&ndash;<td>{{item.price}}₴</td>&ndash;&gt;-->
+        <!--&lt;!&ndash;<td>&ndash;&gt;-->
+          <!--&lt;!&ndash;<button class="btn btn-sm btn-danger" (click)="order.removeDish(i)">&ndash;&gt;-->
+            <!--&lt;!&ndash;<i class="fa fa-remove"></i>&ndash;&gt;-->
+          <!--&lt;!&ndash;</button>&ndash;&gt;-->
+        <!--&lt;!&ndash;</td>&ndash;&gt;-->
+      <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+      <!--&lt;!&ndash;</tbody>&ndash;&gt;-->
+    <!--&lt;!&ndash;</table>&ndash;&gt;-->
+
+
+  <!--</div>-->
+
+
+
+  <!--<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">-->
+
+
+
+
+
+  <!--</div>-->
+<!--</div>-->
+
+
+<div class="col-lg-12 mt-3">
+    <div class="card">
         <div class="card-header">
-          <div class="row">
-            <div class="col-lg-2"><h4>Заказы</h4></div>
-            <div class="col-lg-3">
-              <div class="form-group input-group">
-                <input class="form-control" placeholder="yyyy-mm-dd"
-                       name="dp" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker">
-                <span class="input-group-append">
+            <div class="row">
+                <div class="col-lg-2"><h4>Заказы</h4></div>
+                <div class="col-lg-3">
+                    <div class="form-group input-group">
+                        <input class="form-control" placeholder="yyyy-mm-dd"
+                               name="dp" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker">
+                        <span class="input-group-append">
             <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
               <i class="fa fa-calendar"></i>
             </button>
           </span>
-              </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="btn-group float-right" role="group" aria-label="Ordering">
+                        <button type="button" class="btn btn-outline-dark" data-toggle="tooltip" title="Заказ из Skype" (click)="importFromSkype(importOrder)">
+                            <i class="fa fa-skype"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-dark" data-toggle="tooltip" title="Создать заказ">
+                            <i class="fa fa-shopping-cart"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-7">
-              <div class="btn-group float-right" role="group" aria-label="Ordering">
-                <button type="button" class="btn btn-outline-dark" data-toggle="tooltip" title="Заказ из Skype" (click)="importFromSkype(importOrder)">
-                  <i class="fa fa-skype"></i>
-                </button>
-                <button type="button" class="btn btn-outline-dark" data-toggle="tooltip" title="Создать заказ">
-                  <i class="fa fa-shopping-cart"></i>
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
         <div class="card-body">
-          <ngb-accordion #acc="ngbAccordion" [closeOthers]="true">
-            <ngb-panel *ngFor="let order of orders">
-              <ng-template ngbPanelTitle>
-                <span>{{order.customerAlias}}, {{order.price}}₴</span>
-              </ng-template>
-              <ng-template ngbPanelContent>
-                <table class="table table-sm table-striped table-hover mt-3">
-                  <thead class="thead-light">
-                  <th>Блюдо</th>
-                  <th>Кол-во</th>
-                  <th>Цена</th>
-                  <th></th>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let item of order.items; let i = index">
-                    <td>{{item?.dish?.name}}</td>
-                    <td>
-                      <input class="form-control-sm" type="number" min="1" [(ngModel)]="item.quantity" (ngModelChange)="order.recalcPrice(item)">
-                    </td>
-                    <td>{{item.price}}₴</td>
-                    <td>
-                      <button class="btn btn-sm btn-danger" (click)="order.removeDish(i)">
-                        <i class="fa fa-remove"></i>
-                      </button>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </ng-template>
-            </ngb-panel>
-          </ngb-accordion>
+            <ngb-accordion #acc="ngbAccordion" [closeOthers]="true">
+                <ngb-panel *ngFor="let order of orders">
+                    <ng-template ngbPanelTitle>
+                        <span>{{order.customerAlias}}, {{order.price}}₴</span>
+                    </ng-template>
+                    <ng-template ngbPanelContent>
+                        <table class="table table-sm table-striped table-hover mt-3">
+                            <thead class="thead-light">
+                            <th>Блюдо</th>
+                            <th>Кол-во</th>
+                            <th>Цена</th>
+                            <th></th>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let item of order.items; let i = index">
+                                <td>{{item?.dish?.name}}</td>
+                                <td>
+                                    <input class="form-control-sm" type="number" min="1" [(ngModel)]="item.quantity" (ngModelChange)="order.recalcPrice(item)">
+                                </td>
+                                <td>{{item.price}}₴</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger" (click)="order.removeDish(i)">
+                                        <i class="fa fa-remove"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </ng-template>
+                </ngb-panel>
+            </ngb-accordion>
         </div>
-      </div>
     </div>
-
-  </div>
-
-
-  <table class="table table-sm table-striped table-hover mt-3">
-    <thead class="thead-light">
-      <th>Заказчик</th>
-      <th>Блюда</th>
-    </thead>
-    <tbody>
-    <tr *ngFor="let e of dishesByCustomer.entries(); let i = index">
-      <td>{{e[0]}}</td>
-      <td>{{e[1].map(o => `${d.name} (${d.quantity`)}}₴</td>
-    </tr>
-    </tbody>
-  </table>
-
-  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-
-    <table class="table table-sm table-striped table-hover mt-3">
-      <thead class="thead-light">
-      <th>Блюдо</th>
-      <th>Кол-во</th>
-      <th>Цена</th>
-      <th></th>
-      </thead>
-      <tbody>
-      <tr *ngFor="let item of order.items; let i = index">
-        <td>{{item?.dish?.name}}</td>
-        <td>
-          <input class="form-control-sm" type="number" min="1" [(ngModel)]="item.quantity" (ngModelChange)="order.recalcPrice(item)">
-        </td>
-        <td>{{item.price}}₴</td>
-        <td>
-          <button class="btn btn-sm btn-danger" (click)="order.removeDish(i)">
-            <i class="fa fa-remove"></i>
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-
-
-  </div>
-
-
-
-  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-
-
-
-
-
-  </div>
 </div>
-
-
 
 
 <ng-template #importOrder let-modal>
