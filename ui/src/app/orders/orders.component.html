@@ -100,33 +100,12 @@
         </div>
         <div class="card-body">
             <ngb-accordion #acc="ngbAccordion" [closeOthers]="true">
-                <ngb-panel *ngFor="let order of orders">
+                <ngb-panel *ngFor="let o of orders">
                     <ng-template ngbPanelTitle>
-                        <span>{{order.customerAlias}}, {{order.price}}₴</span>
+                        <span>{{o.customerAlias}}, {{o.price}}₴</span>
                     </ng-template>
                     <ng-template ngbPanelContent>
-                        <table class="table table-sm table-striped table-hover mt-3">
-                            <thead class="thead-light">
-                            <th>Блюдо</th>
-                            <th>Кол-во</th>
-                            <th>Цена</th>
-                            <th></th>
-                            </thead>
-                            <tbody>
-                            <tr *ngFor="let item of order.items; let i = index">
-                                <td>{{item?.dish?.name}}</td>
-                                <td>
-                                    <input class="form-control-sm" type="number" min="1" [(ngModel)]="item.quantity" (ngModelChange)="order.recalcPrice(item)">
-                                </td>
-                                <td>{{item.price}}₴</td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger" (click)="order.removeDish(i)">
-                                        <i class="fa fa-remove"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <app-order [order]="o"></app-order>
                     </ng-template>
                 </ngb-panel>
             </ngb-accordion>
@@ -144,28 +123,7 @@
       <textarea class="form-control" rows="8" id="skype-order" [(ngModel)]="skypeOrder"></textarea>
     </div>
     <div *ngIf="parsedOrder" class="col-sm-12">
-      <table class="table table-sm table-striped table-hover mt-3">
-        <thead class="thead-light">
-        <th>Блюдо</th>
-        <th>Кол-во</th>
-        <th>Цена</th>
-        <th></th>
-        </thead>
-        <tbody>
-        <tr *ngFor="let item of parsedOrder.items; let i = index">
-          <td>{{item?.dish?.name}}</td>
-          <td>
-            <input class="form-control-sm" type="number" min="1" [(ngModel)]="item.quantity" (ngModelChange)="parsedOrder.recalcPrice(item)">
-          </td>
-          <td>{{item.price}}₴</td>
-          <td>
-            <button class="btn btn-sm btn-danger" (click)="parsedOrder.removeDish(i)">
-              <i class="fa fa-remove"></i>
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+      <app-order [order]="parsedOrder"></app-order>
     </div>
   </div>
   <div class="modal-footer">

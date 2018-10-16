@@ -1,0 +1,22 @@
+<table class="table table-sm table-striped table-hover mt-3">
+  <thead class="thead-light">
+  <th>Блюдо</th>
+  <th>Кол-во</th>
+  <th>Цена</th>
+  <th></th>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of order.items; let i = index">
+    <td>{{item?.dish?.name}}</td>
+    <td>
+      <input class="form-control-sm" type="number" min="1" [(ngModel)]="item.quantity" (ngModelChange)="order.recalcPrice(item)">
+    </td>
+    <td>{{item.price}}₴</td>
+    <td>
+      <button class="btn btn-sm btn-danger" (click)="order.removeDish(i)">
+        <i class="fa fa-remove"></i>
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>

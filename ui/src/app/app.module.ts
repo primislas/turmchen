@@ -11,13 +11,15 @@ import {AppRoutingModule} from './app-routing.module';
 import {DataTableModule} from 'angular-6-datatable';
 import {Ng2SmartTableModule} from 'ng2-smart-table';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { OrderComponent } from './order/order.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     OrdersComponent,
     MenuComponent,
-    CustomersComponent
+    CustomersComponent,
+    OrderComponent
   ],
   imports: [
     BrowserModule,
