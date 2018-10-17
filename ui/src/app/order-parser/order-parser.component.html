@@ -1,0 +1,30 @@
+<ng-template #modalImport let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Заказ из Skype</h4>
+  </div>
+  <div class="modal-body">
+    <div class="col-sm-12">
+      <textarea class="form-control" rows="8" id="skype-order" [(ngModel)]="skypeOrder"></textarea>
+    </div>
+    <div *ngIf="editCustomer && parsedOrder" class="row mt-3">
+      <div class="col-sm-4"><label id="custLabel" for="custInput">Заказчик</label></div>
+      <div class="col-sm-8"><input id="custInput" class="form-control-sm" type="text" [(ngModel)]="parsedOrder.customerAlias"></div>
+    </div>
+    <div *ngIf="parsedOrder" class="col-sm-12 mt-3">
+      <app-order [order]="parsedOrder"></app-order>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="btn-group btn-group pull-right" role="group">
+      <button class="btn btn-info" role="button" (click)="parse()">
+        <i class="fa fa-cogs"> Распознать</i>
+      </button>
+      <button *ngIf="parsedOrder" class="btn btn-success" role="button" (click)="modal.close(parsedOrder)">
+        <i class="fa fa-download"> Импортировать</i>
+      </button>
+      <button class="btn btn-danger" role="button" (click)="modal.dismiss()">
+        <i class="fa fa-remove"> Отмена</i>
+      </button>
+    </div>
+  </div>
+</ng-template>

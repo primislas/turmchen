@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {catchError, map} from 'rxjs/operators';
-import {Observable, throwError} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {Order} from '../model/order';
 import {TimeService} from './time.service';
 import {MenuService} from './menu.service';
@@ -49,12 +49,15 @@ export class OrderService {
   }
 
   removeOrder(order: Order): Observable<Order> {
-    return this.http
-      .delete<Order>(this.orderEndpoint(order.id))
-      .pipe(
-        map(() => order),
-        catchError(OrderService.handleError)
-      )
+    if (order && order.id)
+      return this.http
+        .delete<Order>(this.orderEndpoint(order.id))
+        .pipe(
+          map(() => order),
+          catchError(OrderService.handleError)
+        );
+    else
+      return of(order);
   }
 
   parseOrder(order: string): Observable<Order> {

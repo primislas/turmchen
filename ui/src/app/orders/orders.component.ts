@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Order} from '../model/order';
 import {MenuService} from '../services/menu.service';
 import {OrderService} from '../services/order.service';
 import {TimeService} from '../services/time.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Dish} from '../model/dish';
-import {OrderItem} from '../model/order.item';
+import {OrderParserComponent} from '../order-parser/order-parser.component';
 
 @Component({
   selector: 'app-orders',
@@ -16,10 +16,9 @@ export class OrdersComponent implements OnInit {
 
   date: any = {};
   orders: Order[] = [];
-  parsedOrder: Order;
-  skypeOrder: string = '';
   groupedOrders: Order[] = [];
-  ordersByDish: Map<Dish, number> = new Map();
+  ordersByDish: DishOrders[] = [];
+  @ViewChild('importModal') importModal: OrderParserComponent;
 
   constructor(
     private dishService: MenuService,
@@ -41,55 +40,112 @@ export class OrdersComponent implements OnInit {
       });
   }
 
-  dishByCustomer() {
-    const itemsByCustomer: Map<String, Map<number, OrderItem>> = new Map();
-    this.orders.forEach(order => {
-      const alias = order.customerAlias;
-      if (alias) {
-        const itemById = itemsByCustomer.get(alias) || new Map();
-        (order.items || []).forEach(item => {
-          const dish = itemById.get(item.dish.id);
-          if (dish) dish.quantity += item.quantity;
-          else itemById.set(item.dish.id, item);
-        });
-        itemsByCustomer.set(alias, itemById);
-      }
+  groupByDish(): DishOrders[] {
+    console.log("Grouping by dish...");
+    const map = this.orders
+      .map(o => o.splitByItems())
+      .reduce((acc,a) => acc.concat(a), [])
+      .reduce((acc: object, o: Order) => {
+        const id = o.items[0].dish.id;
+        const orders = (acc[id] || []);
+        orders.push(o);
+        acc[id] = orders;
+        return acc;
+      }, {});
+    return Object.keys(map).map(id => {
+      const orders = map[id];
+      const dOrders = new DishOrders();
+      dOrders.dish = orders[0].items[0].dish;
+      dOrders.orders = orders;
+      dOrders.qty = orders
+        .map(o => o.items[0].quantity)
+        .reduce((a, b) => a + b, 0);
+      return dOrders;
     });
-    this.groupedOrders = Object
-      .entries(itemsByCustomer)
-      .map(([custId, itemByDishId]) => {
-        const order = new Order();
-        order.customerAlias = custId;
-        order.items = Object.values(itemByDishId);
-        return order;
+  }
+
+  // dishByCustomer() {
+  //   const itemsByCustomer: Map<String, Map<number, OrderItem>> = new Map();
+  //   this.orders.forEach(order => {
+  //     const alias = order.customerAlias;
+  //     if (alias) {
+  //       const itemById = itemsByCustomer.get(alias) || new Map();
+  //       (order.items || []).forEach(item => {
+  //         const dish = itemById.get(item.dish.id);
+  //         if (dish) dish.quantity += item.quantity;
+  //         else itemById.set(item.dish.id, item);
+  //       });
+  //       itemsByCustomer.set(alias, itemById);
+  //     }
+  //   });
+  //   this.groupedOrders = Object
+  //     .entries(itemsByCustomer)
+  //     .map(([custId, itemByDishId]) => {
+  //       const order = new Order();
+  //       order.customerAlias = custId;
+  //       order.items = Object.values(itemByDishId);
+  //       return order;
+  //     })
+  // }
+
+  importFromSkype() {
+    this.importModal.editCustomer = true;
+    this.importModal
+      .open()
+      .then(order => {
+        this.orderService
+          .createOrder(order)
+          .subscribe(o => {
+            this.orders.push(o);
+          });
       })
+      .then(() => this.importModal.cleanup());
   }
 
-  importFromSkype(importModal) {
-    this.modalService
-      .open(importModal)
-      .result
-      .then(
-        order => {
-          this.orderService
-            .createOrder(order)
-            .subscribe(o => {
-              this.orders.push(o);
-              this.parsedOrder = undefined;
-              this.skypeOrder = "";
-            });
-        },
-        () => {
-          this.parsedOrder = undefined;
-        });
-  }
-
-  parse() {
+  removeOrder(i) {
     this.orderService
-      .parseOrder(this.skypeOrder)
-      .subscribe(order => {
-        this.parsedOrder = order;
+      .removeOrder(this.orders[i])
+      .subscribe(() => this.orders.splice(i, 1));
+  }
+
+  updateOrder(i) {
+    const order = this.orders[i];
+    this.orderService
+      .updateOrder(order)
+      .subscribe(o => {
+        if (order) {
+          order.id = o.id;
+          order.items = o.items;
+        }
       });
+  }
+
+  addOrderItems(order: Order) {
+    this.importModal.editCustomer = false;
+    this.importModal
+      .open()
+      .then((o: Order) => {
+        (o.items || []).forEach(item => order.addItem(item));
+      })
+      .then(() => this.importModal.cleanup());
+  }
+
+  recalcByDish() {
+    this.ordersByDish = this.groupByDish();
+  }
+
+}
+
+class DishOrders {
+  dish: Dish;
+  qty: number;
+  orders: Order[] = [];
+
+  users(): string {
+    return this
+      .orders
+      .map(o => `${o.customerAlias} (x${o.items[0].quantity})`)
+      .join(", ");
   }
 
 }

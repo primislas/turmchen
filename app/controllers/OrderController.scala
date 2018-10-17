@@ -45,9 +45,16 @@ class OrderController @Inject()
   }
 
   def updateOrder(id: Int) = Action { request =>
-    val order = JsonMapper.fromJson[Order](request.body.asText.get)
+    val order = JsonMapper.fromJson[Order](request.body.asJson.get.toString())
     Try(orderRepo.update(order)) match {
       case Success(created) => Ok(JsonMapper.toJson(created))
+      case Failure(exception) => InternalServerError(JsonMapper.toJson(exception))
+    }
+  }
+
+  def deleteOrder(id: Int) = Action {
+    Try(orderRepo.delete(id)) match {
+      case Success(_) => Ok("{}")
       case Failure(exception) => InternalServerError(JsonMapper.toJson(exception))
     }
   }
@@ -63,8 +70,14 @@ class OrderController @Inject()
   def parseOrderStr(str: String): Order = {
     val lines = str.split('\n').map(_.trim).filter(!_.isEmpty)
 
-    val customerAlias = lines.flatMap(parseCustomerAlias).headOption.map(_.alias)
-    val orderItems = lines.map(_.toLowerCase).map(_.replaceAll("(?:\\s+|\\x{A0}+)+", " ")).flatMap(parseOrderItem)
+    val customerAlias = lines.flatMap(parseCustomerAlias).headOption.map(_.alias).orElse(lines.headOption)
+    val orderItems = lines
+      .map(_.toLowerCase)
+      .map(_.replaceAll("(?:\\s+|\\x{A0}+)+", " "))
+      .flatMap(parseOrderItem)
+//      .groupBy(_.dish.id)
+//      .mapValues(items => items.reduce((a1, a2) => a1.copy(quantity = a1.quantity + a2.quantity)))
+//      .values.toSeq
     val dayTimestamp = lines.map(_.toLowerCase).flatMap(parseDay).headOption.getOrElse(nextDay)
 
     Order(customerAlias = customerAlias, timestamp = dayTimestamp, items = orderItems)
@@ -97,7 +110,7 @@ class OrderController @Inject()
   }
 
   val qtyPattern: Regex = """(?<qty>\d+)\s*шт""".r
-  val suffixPattern: Regex = """\s+(?<qty>\d{1})$""".r.unanchored
+  val suffixPattern: Regex = """\s+(?:x|х)?(?<qty>\d{1})$""".r.unanchored
 
   def parseOrderItem(str: String): Option[OrderItem] = {
     val quantity = str match {
@@ -107,10 +120,14 @@ class OrderController @Inject()
     }
     val lowerCase = str.toLowerCase
     dishRepo.idsByAlias()
-      .find(tupled((alias, _) => lowerCase.contains(alias)))
+      .find(tupled((alias, _) => lowerCase == alias))
+        .orElse(dishRepo.idsByAlias().find(tupled((alias, _) => lowerCase.contains(alias))))
         .orElse(dishRepo.idsByAlias().find(tupled((alias, _) => alias.contains(lowerCase))))
         .flatMap(tupled((_, id) => dishRepo.read(id)))
-        .map(dish => OrderItem(None, dish, quantity, dish.price.getOrElse(BigDecimal(0))))
+        .map(dish => {
+          val price = dish.price.map(_ * BigDecimal(quantity)).getOrElse(BigDecimal(0))
+          OrderItem(None, dish, quantity, price)
+        })
   }
 
   val msInDay: Long = 60 * 60 * 24 * 1000L

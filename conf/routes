@@ -22,3 +22,4 @@ GET     /turmchen/orders?day=:day   controllers.OrderController.getDailyOrders(d
 POST    /turmchen/orders            controllers.OrderController.create
 POST    /turmchen/orders/parser     controllers.OrderController.parseOrder
 PUT     /turmchen/orders/:id        controllers.OrderController.updateOrder(id: Int)
+DELETE  /turmchen/orders/:id        controllers.OrderController.deleteOrder(id: Int)

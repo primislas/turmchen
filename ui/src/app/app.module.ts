@@ -12,6 +12,7 @@ import {DataTableModule} from 'angular-6-datatable';
 import {Ng2SmartTableModule} from 'ng2-smart-table';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { OrderComponent } from './order/order.component';
+import { OrderParserComponent } from './order-parser/order-parser.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { OrderComponent } from './order/order.component';
     OrdersComponent,
     MenuComponent,
     CustomersComponent,
-    OrderComponent
+    OrderComponent,
+    OrderParserComponent
   ],
   imports: [
     BrowserModule,

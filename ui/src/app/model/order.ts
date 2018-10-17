@@ -31,6 +31,23 @@ export class Order {
     return this;
   }
 
+  addItem(item: OrderItem): Order {
+    const exstItem = this.items.find(i => i.dish.id === item.dish.id);
+    if (exstItem) {
+      exstItem.quantity += item.quantity;
+      exstItem.recalcPrice();
+    }
+    else this.items.push(item);
+    this.recalcPrice();
+    return this;
+  }
+
+  addOrder(order: Order) {
+    if (order) (order.items || []).forEach(i => this.addItem(i));
+    this.recalcPrice();
+    return this;
+  }
+
   removeDish(index: number) {
     this.items.splice(index, 1);
     this.recalcPrice();
@@ -38,8 +55,29 @@ export class Order {
 
   recalcPrice(item?: OrderItem): Order {
     if (item) item.recalcPrice();
-    this.price = this.items.map(i => i.price).reduce((a,b) => a + b, 0);
+    this.price = this.items.map(i => i.price).reduce((a, b) => a + b, 0);
     return this;
+  }
+
+  splitByItems(): Order[] {
+    return this.items.map(i => {
+      const o = new Order();
+      o.customerAlias = this.customerAlias;
+      o.customer = this.customer;
+      o.timestamp = this.timestamp;
+      o.items = [i];
+      return o;
+    });
+  }
+
+  dishes(): string {
+    return this
+      .items
+      .map(i => {
+        if (i.quantity < 2) return `${i.dish.name}`;
+        else return `${i.dish.name} (x${i.quantity})`;
+      })
+      .join(', ');
   }
 
 }
