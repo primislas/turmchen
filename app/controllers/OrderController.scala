@@ -109,7 +109,7 @@ class OrderController @Inject()
     })
   }
 
-  val qtyPattern: Regex = """(?<qty>\d+)\s*шт""".r
+  val qtyPattern: Regex = """(?<qty>\d+)\s*шт""".r.unanchored
   val suffixPattern: Regex = """\s+(?:x|х)?(?<qty>\d{1})$""".r.unanchored
 
   def parseOrderItem(str: String): Option[OrderItem] = {
