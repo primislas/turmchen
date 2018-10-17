@@ -16,9 +16,9 @@ GET     /dishes                     controllers.DishController.getAllDishes
 GET     /turmchen/dishes            controllers.DishController.getAllDishes
 GET     /turmchen/dishes/:id        controllers.DishController.getDish(id)
 
-GET     /turmchen/orders            controllers.OrderController.getAllOrders
+#GET     /turmchen/orders            controllers.OrderController.getAllOrders
 GET     /turmchen/orders/:id        controllers.OrderController.getOrder(id: Int)
-GET     /turmchen/orders?day=:day   controllers.OrderController.getDailyOrders(day: Long)
+GET     /turmchen/orders            controllers.OrderController.getDailyOrders(day: Option[Long])
 POST    /turmchen/orders            controllers.OrderController.create
 POST    /turmchen/orders/parser     controllers.OrderController.parseOrder
 PUT     /turmchen/orders/:id        controllers.OrderController.updateOrder(id: Int)

@@ -27,8 +27,8 @@ class OrderController @Inject()
     Ok(JsonMapper.toJson(orders))
   }
 
-  def getDailyOrders(day: Long) = Action {
-    val orders = orderRepo.getOrdersForDay(day)
+  def getDailyOrders(day: Option[Long]) = Action {
+    val orders = day.map(orderRepo.getOrdersForDay).getOrElse(orderRepo.readAll())
     Ok(JsonMapper.toJson(orders))
   }
 

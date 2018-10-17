@@ -3,7 +3,6 @@ import {Order} from '../model/order';
 import {MenuService} from '../services/menu.service';
 import {OrderService} from '../services/order.service';
 import {TimeService} from '../services/time.service';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Dish} from '../model/dish';
 import {OrderParserComponent} from '../order-parser/order-parser.component';
 
@@ -15,15 +14,14 @@ import {OrderParserComponent} from '../order-parser/order-parser.component';
 export class OrdersComponent implements OnInit {
 
   date: any = {};
+  selectedDate: number;
   orders: Order[] = [];
-  groupedOrders: Order[] = [];
   ordersByDish: DishOrders[] = [];
   @ViewChild('importModal') importModal: OrderParserComponent;
 
   constructor(
     private dishService: MenuService,
-    private orderService: OrderService,
-    private modalService: NgbModal) {
+    private orderService: OrderService) {
   }
 
   ngOnInit() {
@@ -31,13 +29,28 @@ export class OrdersComponent implements OnInit {
     this.date.day = d.getDate();
     this.date.month = d.getMonth() + 1;
     this.date.year = d.getUTCFullYear();
+    this.selectedDate = TimeService.millisecondsOfDate(d);
     console.log(`Date: ${d}; set date: ${JSON.stringify(this.date)}`);
 
+    this.loadOrders(d);
+  }
+
+  loadOrders(date?: Date) {
+    let requestDate;
+    if (!date) {
+        requestDate = new Date();
+        requestDate.setDate(this.date.day);
+        requestDate.setMonth(this.date.month - 1);
+        requestDate.setFullYear(this.date.year);
+    }
+    else requestDate = date;
+    console.log(`Loading orders for ${requestDate}`);
+    this.selectedDate = TimeService.millisecondsOfDate(requestDate);
     this.orderService
-      .getOrders(d)
-      .subscribe(orders => {
-        this.orders = orders;
-      });
+        .getOrders(requestDate)
+        .subscribe(orders => {
+          this.orders = orders;
+        });
   }
 
   groupByDish(): DishOrders[] {
@@ -64,35 +77,12 @@ export class OrdersComponent implements OnInit {
     });
   }
 
-  // dishByCustomer() {
-  //   const itemsByCustomer: Map<String, Map<number, OrderItem>> = new Map();
-  //   this.orders.forEach(order => {
-  //     const alias = order.customerAlias;
-  //     if (alias) {
-  //       const itemById = itemsByCustomer.get(alias) || new Map();
-  //       (order.items || []).forEach(item => {
-  //         const dish = itemById.get(item.dish.id);
-  //         if (dish) dish.quantity += item.quantity;
-  //         else itemById.set(item.dish.id, item);
-  //       });
-  //       itemsByCustomer.set(alias, itemById);
-  //     }
-  //   });
-  //   this.groupedOrders = Object
-  //     .entries(itemsByCustomer)
-  //     .map(([custId, itemByDishId]) => {
-  //       const order = new Order();
-  //       order.customerAlias = custId;
-  //       order.items = Object.values(itemByDishId);
-  //       return order;
-  //     })
-  // }
-
   importFromSkype() {
     this.importModal.editCustomer = true;
     this.importModal
       .open()
       .then(order => {
+        order.timestamp = this.selectedDate;
         this.orderService
           .createOrder(order)
           .subscribe(o => {

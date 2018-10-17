@@ -1,17 +1,23 @@
-<ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#nav-orders" role="tab" aria-controls="nav-orders"
-       aria-selected="true">Заказы</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
-       aria-selected="false">По заказчику</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
-       aria-selected="false" (click)="recalcByDish()">По блюду</a>
-  </li>
-</ul>
+<div class="col-12">
+
+  <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#nav-orders" role="tab" aria-controls="nav-orders"
+         aria-selected="true">Заказы</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+         aria-selected="false">По заказчику</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+         aria-selected="false" (click)="recalcByDish()">По блюду</a>
+    </li>
+  </ul>
+
+
+</div>
+
 
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="nav-orders" role="tabpanel" aria-labelledby="nav-orders-tab">
@@ -24,7 +30,7 @@
             <div class="col-lg-3">
               <div class="form-group input-group">
                 <input class="form-control" placeholder="yyyy-mm-dd"
-                       name="dp" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker">
+                       name="dp" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker" (ngModelChange)="loadOrders()">
                 <span class="input-group-append">
             <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
               <i class="fa fa-calendar"></i>
