@@ -99,6 +99,7 @@ export class OrdersComponent implements OnInit {
             this.orders.push(o);
           });
       })
+      .catch(() => {})
       .then(() => this.importModal.cleanup());
   }
 
@@ -127,6 +128,7 @@ export class OrdersComponent implements OnInit {
       .then((o: Order) => {
         (o.items || []).forEach(item => order.addItem(item));
       })
+      .catch(() => {})
       .then(() => this.importModal.cleanup());
   }
 
