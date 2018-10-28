@@ -5,6 +5,7 @@ import {OrderService} from '../services/order.service';
 import {TimeService} from '../services/time.service';
 import {Dish} from '../model/dish';
 import {OrderParserComponent} from '../order-parser/order-parser.component';
+import {OrderItem} from '../model/order.item';
 
 @Component({
   selector: 'app-orders',
@@ -77,6 +78,22 @@ export class OrdersComponent implements OnInit {
     });
   }
 
+  printOrders(): string {
+    return this.orders
+      .map(o => `<b>${o.customerAlias}</b> (${o.price}₴): ${this.printOrderItems(o.items)}.<br>`)
+      .join("\n");
+  }
+
+  private printOrderItems(items: OrderItem[]): string {
+    return items.map(this.printOrderItem).join(", ");
+  }
+
+  private printOrderItem(item: OrderItem): string {
+    return (item.quantity === 1)
+      ? `${item.dish.name}`
+      : `${item.dish.name} (${item.quantity}шт.)`;
+  }
+
   importFromSkype() {
     this.importModal.editCustomer = true;
     this.importModal
@@ -91,6 +108,22 @@ export class OrdersComponent implements OnInit {
       })
       .catch(() => {})
       .then(() => this.importModal.cleanup());
+  }
+
+  print(): void {
+    const
+      printContents = this.printOrders(),
+      popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open();
+    popupWin.document.write(`
+      <html>
+        <head>
+          <title>Заказы</title>
+        </head>
+    <body onload="window.print();window.close()">${printContents}</body>
+      </html>`
+    );
+    popupWin.document.close();
   }
 
   removeOrder(i) {
