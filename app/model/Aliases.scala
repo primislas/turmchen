@@ -16,3 +16,10 @@ abstract class Aliases[Key, T <: Aliases[Key, T]]
   }
 
 }
+
+object Aliases {
+  def nameToAlias(name: String): String = name
+    .toLowerCase
+    .replaceAll("(?:\\s+|\\x{A0}+)+", " ")
+    .replaceAll("ё", "е")
+}

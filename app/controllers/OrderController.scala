@@ -5,7 +5,7 @@ import java.time.DayOfWeek
 import java.util.{Calendar, GregorianCalendar}
 
 import javax.inject.{Inject, Singleton}
-import model.{Order, OrderItem}
+import model.{Aliases, Order, OrderItem}
 import play.api.mvc.{AbstractController, ControllerComponents}
 import repository.api.{DishRepository, OrderRepository}
 import utils.json.JsonMapper
@@ -118,11 +118,11 @@ class OrderController @Inject()
       case suffixPattern(qty) => qty.toInt
       case _ => 1
     }
-    val lowerCase = str.toLowerCase
+    val itemAlias = Aliases.nameToAlias(str)
     dishRepo.idsByAlias()
-      .find(tupled((alias, _) => lowerCase == alias))
-        .orElse(dishRepo.idsByAlias().find(tupled((alias, _) => lowerCase.contains(alias))))
-        .orElse(dishRepo.idsByAlias().find(tupled((alias, _) => alias.contains(lowerCase))))
+      .find(tupled((alias, _) => itemAlias == alias))
+        .orElse(dishRepo.idsByAlias().find(tupled((alias, _) => itemAlias.contains(alias))))
+        .orElse(dishRepo.idsByAlias().find(tupled((alias, _) => alias.contains(itemAlias))))
         .flatMap(tupled((_, id) => dishRepo.read(id)))
         .map(dish => {
           val price = dish.price.map(_ * BigDecimal(quantity)).getOrElse(BigDecimal(0))

@@ -1,6 +1,6 @@
 package utils.csv
 
-import model.Dish
+import model.{Aliases, Dish}
 import utils.csv.KnownTags._
 
 import Function.tupled
@@ -25,7 +25,7 @@ object CsvParser {
       def evalField[T](tag: String, fp: FieldParser[T]) = fieldsByTag.get(tag).flatMap(fp.eval)
 
       val dishName = evalField(name, StringParser)
-      val dishAlias = dishName.map(_.toLowerCase).map(_.replaceAll("(?:\\s+|\\x{A0}+)+", " ")).toSet
+      val dishAlias = dishName.map(Aliases.nameToAlias).toSet
       val dishPrice = evalField(price, DecimalParser)
       val dishSchedule = evalField(day, DayParser).getOrElse(Set.empty)
       val dishCategories = evalField(category, StringParser).toSet
@@ -44,7 +44,6 @@ object CsvParser {
 
   def toCsvFields(headers: String): Seq[FieldConfig] =
     headers.split("\t").zipWithIndex.map(si => FieldConfig(si._1, si._2))
-
 
 }
 
