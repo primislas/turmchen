@@ -33,7 +33,7 @@ object CsvParser {
       val dishWeight = evalField(weight, DecimalParser)
       val dishQty = evalField(quantity, QuantityParser)
 
-      if (dishName.isDefined)
+      if (dishName.isDefined && dishPrice.isDefined && dishSchedule.nonEmpty)
         Option(Dish(None, dishName, dishDescr, dishAlias, dishCategories, dishPrice, dishSchedule, dishWeight, dishQty))
       else
         None

@@ -14,7 +14,7 @@ abstract class InMemoryAliasCrudRepository[T <: Aliases[Int, T]]
 
   override def create(entity: T): T = {
     if (entity.aliases.intersect(byAlias.keySet).nonEmpty)
-      throw new RuntimeException("Entities with such aliases already exist.")
+      throw new RuntimeException(s"Entities with aliases [${entity.aliases}] already exist.")
     val withId = super.create(entity)
     withId.aliases.foreach(byAlias.put(_, withId))
     withId
@@ -24,6 +24,9 @@ abstract class InMemoryAliasCrudRepository[T <: Aliases[Int, T]]
 
   def findByAliases(aliases: Seq[String]): Seq[T] = aliases.flatMap(findByAlias)
 
-  def idsByAlias(): Map[String, Int] = ListMap(byAlias.flatMap(at => at._2.id.map(id => (at._1, id))).toSeq: _*)
+  def idsByAlias(): Map[String, Int] = {
+    val idByAlias = byAlias.toSeq.flatMap(at => at._2.id.map(id => (at._1, id)))
+    ListMap(idByAlias: _*)
+  }
 
 }
